@@ -81,7 +81,7 @@ class ImageController extends Controller
     $image->save(base_path().'/storage/temp/'.$imageName.'.png');
 
     $config = [
-      'keyFilePath' => 'C:\Users\Renix\Documents\Projects\devstv-backend\storage\devstv-223819-035b29e72f73.json',
+      'keyFilePath' => '/var/www/cdn.devs.tv/storage/keyFile.json',
       'projectId' => 'devstv-223819',
     ];
     $storage = new StorageClient($config);
