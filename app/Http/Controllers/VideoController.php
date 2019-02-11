@@ -171,11 +171,11 @@ class VideoController extends Controller
       'ffmpeg.threads'   => 12,
     ]);
 
-    if(empty($newWidth)) { $width = 640; }
-    if(empty($newHeight)) { $height = 360; }
+    if(empty($newWidth)) { $newWidth = 640; }
+    if(empty($newHeight)) { $newHeight = 360; }
 
     $file = $ffmpeg->open($video);
-    $file->filters()->resize(new Dimension($width, $height), $aspect)->synchronize();;
+    $file->filters()->resize(new Dimension($newWidth, $newHeight), $aspect)->synchronize();;
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
