@@ -9,6 +9,7 @@ use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\Coordinate\Dimension;
 use FFMpeg\Format\Video\WebM;
 use Google\Cloud\Storage\StorageClient;
+use Image;
 
 class VideoController extends Controller
 {
@@ -16,9 +17,10 @@ class VideoController extends Controller
   public function videoThumbnail(Request $request)
   {
     $video = $request->query('url');
-    $width = $request->query('w');
-    $height = $request->query('h');
-    $key = $video.'_'.$width.'_'.$height.'_thumbnail';
+    $newWidth = $request->query('w');
+    $newHeight = $request->query('h');
+    $aspect = $request->query('aspect');
+    $key = $video.'_'.$newWidth.'_'.$newHeight.'_'.$aspect.'_thumbnail';
 
     if(empty($video)) {
       return response()->json(['error' => 'URL missing.'], 400);
@@ -32,12 +34,16 @@ class VideoController extends Controller
       return response()->json(['error' => 'URL invalid.'], 400);
     }
 
-    if(empty($width) || empty($height)) {
-      return reponse()->json(['error' => 'Missing dimension queries (h and w)']);
+    if(!empty($newWidth)) {
+      if($newWidth > 720) {
+        return response()->json(['error' => 'Dimensions invalid.'], 400);
+      }
     }
 
-    if($width > 720 || $height > 720) {
-      return response()->json(['error' => 'Dimensions invalid.'], 400);
+    if(!empty($newHeight)) {
+      if($newHeight > 720) {
+        return response()->json(['error' => 'Dimensions invalid.'], 400);
+      }
     }
 
     $ffmpeg = FFMpeg::create([
@@ -57,9 +63,32 @@ class VideoController extends Controller
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
-    $gdImage = $file->frame(TimeCode::fromSeconds($length))->toGDImage();
-    $imageResize = imagescale($gdImage, $width, $height);
-    $imageReize->save(base_path().'/storage/temp/'.$imageName.'.png');
+    $file->frame(TimeCode::fromSeconds($length))->save(base_path().'/storage/temp/'.$imageName.'.png');
+
+    $image = Image::make(base_path().'/storage/temp/'.$imageName.'.png');
+    $width = $image->width();
+    $height = $image->height();
+
+    if(!empty($newWidth)) { $width = $newWidth; }
+    if(!empty($newHeight)) { $height = $newHeight; }
+
+    if(!empty($aspect)) {
+      if($aspect == 'x') {
+        $image->resize($width, null, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+      }
+      else if($aspect == 'y') {
+        $image->resize(null, $height, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+      }
+    }
+    else {
+      $image->resize($width, $height);
+    }
+
+    $image->save(base_path().'/storage/temp/'.$imageName.'.png');
 
     $config = [
       'keyFilePath' => env('STORAGE_KEYFILE', '/var/www/cdn.devs.tv/storage/keyFile.json'),

@@ -36,6 +36,18 @@ class ImageController extends Controller
       return response()->json(['error' => 'URL invalid.'], 400);
     }
 
+    if(!empty($newWidth)) {
+      if($newWidth > 720) {
+        return response()->json(['error' => 'Dimensions invalid.'], 400);
+      }
+    }
+
+    if(!empty($newHeight)) {
+      if($newHeight > 720) {
+        return response()->json(['error' => 'Dimensions invalid.'], 400);
+      }
+    }
+
     $image = Image::make($newImage);
     $imageName = str_random(32);
 
