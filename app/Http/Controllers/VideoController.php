@@ -187,10 +187,10 @@ class VideoController extends Controller
     
     $webm = new WebM();
     //$webm->setKiloBitrate(500)->setAudioChannels(1)->setAudioKiloBitrate(128);
-    $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(15));
+    $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(20));
     $file->save($webm, base_path().'/storage/temp/'.$imageName.'.webm');
     //shell_exec('ffmpeg -i '.base_path().'/storage/temp/'.$imageName.'.webm -filter:v "setpts=0.5*PTS" '.base_path().'/storage/temp/'.$imageName.'.webm');
-    shell_exec('ffmpeg -i '.base_path().'/storage/temp/'.$imageName.'.webm -filter:v "setpts=0.5*PTS" -an -vf minterpolate=fps=60 '.base_path().'/storage/temp/'.$imageName.'.webm');
+    //shell_exec('ffmpeg -i '.base_path().'/storage/temp/'.$imageName.'.webm -filter:v "setpts=0.5*PTS" -an -vf minterpolate=fps=60 '.base_path().'/storage/temp/'.$imageName.'.webm');
 
     $config = [
       'keyFilePath' => env('STORAGE_KEYFILE', '/var/www/cdn.devs.tv/storage/keyFile.json'),
