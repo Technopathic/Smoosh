@@ -182,7 +182,7 @@ class VideoController extends Controller
     $length = round($length)/2;
 
     $webm = new WebM();
-    $webm->setKiloBitrate(1000)->setAudioChannels(1)->setAudioKiloBitrate(0);
+    $webm->setKiloBitrate(1000)->setAudioChannels(2)->setAudioKiloBitrate(256);
     $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(3));
     $file->save($webm, base_path().'/storage/temp/'.$imageName.'.webm');
 
