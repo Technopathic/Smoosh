@@ -8,7 +8,6 @@ use FFMpeg\FFProbe;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\Coordinate\Dimension;
 use FFMpeg\Format\Video\WebM;
-use FFMpeg\Filters\Video\VideoMuteFilter;
 use Google\Cloud\Storage\StorageClient;
 use Image;
 
@@ -183,8 +182,8 @@ class VideoController extends Controller
     $length = round($length)/2;
 
     $webm = new WebM();
-    //$webm->setKiloBitrate(1000)->setAudioChannels(0)->setAudioKiloBitrate(0);
-    $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(3))->mute();
+    $webm->setKiloBitrate(1000)->setAudioChannels(1)->setAudioKiloBitrate(0);
+    $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(3));
     $file->save($webm, base_path().'/storage/temp/'.$imageName.'.webm');
 
     $config = [
