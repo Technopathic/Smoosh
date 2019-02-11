@@ -185,7 +185,7 @@ class VideoController extends Controller
     //$file->gif(TimeCode::fromSeconds($length - 1), new Dimension($newWidth, $newHeight), 15)->save(base_path().'/storage/temp/'.$imageName.'.gif');
     
     $webm = new WebM();
-    $webm->setKiloBitrate(500)->setAudioChannels(1)->setAudioKiloBitrate(128);
+    //$webm->setKiloBitrate(500)->setAudioChannels(1)->setAudioKiloBitrate(128);
     $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(15));
     $file->save($webm, base_path().'/storage/temp/'.$imageName.'.webm');
 
