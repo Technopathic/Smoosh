@@ -7,6 +7,7 @@ use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\Coordinate\Dimension;
+use FFMpeg\Coordinate\FrameRate;
 use FFMpeg\Format\Video\WebM;
 use Google\Cloud\Storage\StorageClient;
 use Image;
@@ -177,11 +178,11 @@ class VideoController extends Controller
 
     $file = $ffmpeg->open($video);
     //$file->filters()->resize(new Dimension($newWidth, $newHeight), $aspect)->framerate(new \FFMpeg\Coordinate\FrameRate(60), 6)->synchronize();
-    $file->filters()->framerate(new \FFMpeg\Coordinate\FrameRate(60), 6)->synchronize();
+    $file->filters()->framerate(new FrameRate(60), 6)->synchronize();
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
-    $file->gif(TimeCode::fromSeconds($length - 1), new FFMpeg\Coordinate\Dimension($newWidth, $newHeight), 15)
+    $file->gif(TimeCode::fromSeconds($length - 1), new Dimension($newWidth, $newHeight), 15)
     ->save(base_path().'/storage/temp/'.$imageName.'.gif');
     
 
