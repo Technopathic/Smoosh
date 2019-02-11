@@ -181,9 +181,8 @@ class VideoController extends Controller
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
-    $file->gif(FFMpeg\Coordinate\TimeCode::fromSeconds($length), new FFMpeg\Coordinate\Dimension($newWidth, $newHeight), 15)
-    ->save(base_path().'/storage/temp/'.$imageName.'.webm');
-    $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(15));
+    $file->gif(TimeCode::fromSeconds($length - 1), new FFMpeg\Coordinate\Dimension($newWidth, $newHeight), 15)
+    ->save(base_path().'/storage/temp/'.$imageName.'.gif');
     
 
     /*$webm = new WebM();
