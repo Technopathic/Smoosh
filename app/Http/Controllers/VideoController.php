@@ -176,7 +176,7 @@ class VideoController extends Controller
     if(empty($newHeight)) { $newHeight = 360; }
 
     $file = $ffmpeg->open($video);
-    $file->filters()->resize(new Dimension($newWidth, $newHeight), $aspect)->framerate(new \FFMpeg\Coordinate\Framerate(60), 12)->synchronize();
+    $file->filters()->resize(new Dimension($newWidth, $newHeight), $aspect)->framerate(new \FFMpeg\Coordinate\FrameRate(60), 12)->synchronize();
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
