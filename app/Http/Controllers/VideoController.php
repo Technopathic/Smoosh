@@ -57,8 +57,8 @@ class VideoController extends Controller
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
-    $file->frame(TimeCode::fromSeconds($length))->toGDImage();
-    $imageResize = imagescale($file, $width, $height);
+    $gdImage = $file->frame(TimeCode::fromSeconds($length))->toGDImage();
+    $imageResize = imagescale($gdImage, $width, $height);
     $imageReize->save(base_path().'/storage/temp/'.$imageName.'.png');
 
     $config = [
