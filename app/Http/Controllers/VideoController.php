@@ -54,11 +54,12 @@ class VideoController extends Controller
     ]);
 
     $file = $ffmpeg->open($video);
-    $file->filters()->resize(new Dimension($width, $height))->synchronize();;
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
-    $file->frame(TimeCode::fromSeconds($length))->save(base_path().'/storage/temp/'.$imageName.'.png');
+    $file->frame(TimeCode::fromSeconds($length))->toGDImage();
+    $imageResize = imagescale($file, $width, $height);
+    $imageReize->save(base_path().'/storage/temp/'.$imageName.'.png');
 
     $config = [
       'keyFilePath' => env('STORAGE_KEYFILE', '/var/www/cdn.devs.tv/storage/keyFile.json'),
