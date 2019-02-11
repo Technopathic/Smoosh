@@ -54,7 +54,7 @@ class VideoController extends Controller
     ]);
 
     $file = $ffmpeg->open($video);
-    $file->filters()->resize(new Dimension($width, $height));
+    $file->filters()->resize(new Dimension($width, $height))->synchronize();;
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
@@ -128,7 +128,7 @@ class VideoController extends Controller
     ]);
 
     $file = $ffmpeg->open($video);
-    $file->filters()->resize(new Dimension($width, $height));
+    $file->filters()->resize(new Dimension($width, $height))->synchronize();;
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
