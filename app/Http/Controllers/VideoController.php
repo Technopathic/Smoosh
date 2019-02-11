@@ -62,6 +62,11 @@ class VideoController extends Controller
     ]);
 
     $file = $ffmpeg->open($video);
+    if($ffprobe->format($video)->get('size') > 1073741824)
+    {
+      return response()->json(['error' => 'This video is too large.']);
+    }
+    
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
@@ -177,9 +182,16 @@ class VideoController extends Controller
     if(empty($newHeight)) { $newHeight = 360; }
 
     $file = $ffmpeg->open($video);
+
+    if($ffprobe->format($video)->get('size') > 1073741824)
+    {
+      return response()->json(['error' => 'This video is too large.']);
+    }
+
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
+
     $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(20));
 
     //$file->filters()->resize(new Dimension($newWidth, $newHeight), $aspect)->framerate(new FrameRate(90), 9)->synchronize();
