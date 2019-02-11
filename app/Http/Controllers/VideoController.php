@@ -177,19 +177,17 @@ class VideoController extends Controller
     if(empty($newHeight)) { $newHeight = 360; }
 
     $file = $ffmpeg->open($video);
-    //$file->filters()->resize(new Dimension($newWidth, $newHeight), $aspect)->framerate(new \FFMpeg\Coordinate\FrameRate(60), 6)->synchronize();
-    $file->filters()->framerate(new FrameRate(60), 6)->synchronize();
+    $file->filters()->resize(new Dimension($newWidth, $newHeight), $aspect)->framerate(new FrameRate(60), 6)->synchronize();
+    //$file->filters()->framerate(new FrameRate(60), 6)->synchronize();
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
     $length = round($length)/2;
-    $file->gif(TimeCode::fromSeconds($length - 1), new Dimension($newWidth, $newHeight), 15)
-    ->save(base_path().'/storage/temp/'.$imageName.'.gif');
+    //$file->gif(TimeCode::fromSeconds($length - 1), new Dimension($newWidth, $newHeight), 15)->save(base_path().'/storage/temp/'.$imageName.'.gif');
     
-
-    /*$webm = new WebM();
+    $webm = new WebM();
     $webm->setKiloBitrate(500)->setAudioChannels(1)->setAudioKiloBitrate(0);
     $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(15));
-    $file->save($webm, base_path().'/storage/temp/'.$imageName.'.webm');*/
+    $file->save($webm, base_path().'/storage/temp/'.$imageName.'.webm');
 
     $config = [
       'keyFilePath' => env('STORAGE_KEYFILE', '/var/www/cdn.devs.tv/storage/keyFile.json'),
@@ -197,13 +195,13 @@ class VideoController extends Controller
     ];
     $storage = new StorageClient($config);
     $bucket = $storage->bucket('devstv-cdn');
-    $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'.gif', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'.gif' ]);
-    $storageUrl = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'.gif';
+    $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'.webm', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'.webm' ]);
+    $storageUrl = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'.webm';
 
     //Cache::put($key, $storageUrl, 262800);
     app('redis')->set($key, $storageUrl);
     app('redis')->expire($key, 262800);
-    unlink(base_path().'/storage/temp/'.$imageName.'.gif');
+    unlink(base_path().'/storage/temp/'.$imageName.'.webm');
 
     return response()->json(['mediaPreview' => $storageUrl]);
   }
