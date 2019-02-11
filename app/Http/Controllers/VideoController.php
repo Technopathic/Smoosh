@@ -177,7 +177,7 @@ class VideoController extends Controller
     if(empty($newHeight)) { $newHeight = 360; }
 
     $file = $ffmpeg->open($video);
-    $file->filters()->resize(new Dimension($newWidth, $newHeight), $aspect)->framerate(new FrameRate(60), 6)->synchronize();
+    $file->filters()->resize(new Dimension($newWidth, $newHeight), $aspect)->framerate(new FrameRate(90), 9)->synchronize();
     //$file->filters()->framerate(new FrameRate(60), 6)->synchronize();
     $imageName = str_random(32);
     $length = $ffprobe->format($video)->get('duration');
@@ -186,7 +186,7 @@ class VideoController extends Controller
     
     $webm = new WebM();
     //$webm->setKiloBitrate(500)->setAudioChannels(1)->setAudioKiloBitrate(128);
-    $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(30));
+    $file->filters()->clip(TimeCode::fromSeconds($length - 1), TimeCode::fromSeconds(15));
     $file->save($webm, base_path().'/storage/temp/'.$imageName.'.webm');
 
     $config = [
