@@ -25,6 +25,16 @@ class ImageController extends Controller
       return response()->json(['error' => 'URL missing.'], 400);
     }
 
+    if (app('redis')->exists($key)) {
+      return response()->json(['mediaThumbnail' => app('redis')->get($key)]);
+    }
+
+    if(new finfo(FILEINFO_MIME, $newImage) == 'image/svg+xml') {
+      app('redis')->set($key, $newImage);
+      app('redis')->expire($key, 262800);
+      return response()-json(['mediaThumbnail' => $newImage]);
+    }
+
     /*if (Cache::has($key)) {
       return response()->json(['mediaThumbnail' => Cache::get($key)]);
     }*/
