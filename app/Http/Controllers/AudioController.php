@@ -54,7 +54,7 @@ class AudioController extends Controller
     $length = round($length)/2;
     $file->filters()->clip(TimeCode::fromSeconds($length - 7.5), TimeCode::fromSeconds(15));
     $file->save(new Mp3(), base_path().'/storage/temp/'.$imageName.'_preview.mp3');
-    $waveform = $file->waveform(640, 240, array('#00FF00'));
+    $waveform = $file->waveform(640, 240, array('#4b8dac'));
     $waveform->save(base_path().'/storage/temp/'.$imageName.'_waveform.png');
 
     $config = [
