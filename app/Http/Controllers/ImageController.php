@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Image;
+use finfo;
 use Google\Cloud\Storage\StorageClient;
 //use Cache;
 
