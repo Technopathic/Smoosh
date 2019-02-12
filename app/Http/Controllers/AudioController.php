@@ -48,7 +48,7 @@ class AudioController extends Controller
     $file = $ffmpeg->open($audio);
     if($ffprobe->format($audio)->get('size') > 104857600)
     {
-      return response()->json(['error' => 'This audio is too large.']);
+      return response()->json(['error' => $ffprobe->format($audio)->get('size')]);
     }
 
     $imageName = str_random(32);
