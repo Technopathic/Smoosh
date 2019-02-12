@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Image;
-use Response;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\Format\Audio\Mp3;
+use Google\Cloud\Storage\StorageClient;
 
 class AudioController extends Controller
 {
@@ -48,7 +46,7 @@ class AudioController extends Controller
     $file = $ffmpeg->open($audio);
     if($ffprobe->format($audio)->get('size') > 104857600)
     {
-      return response()->json(['error' => $ffprobe->format($audio)->get('size')]);
+      return response()->json(['error' => 'This audio is too large.']);
     }
 
     $imageName = str_random(32);
