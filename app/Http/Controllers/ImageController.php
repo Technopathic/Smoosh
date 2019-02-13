@@ -14,7 +14,6 @@ class ImageController extends Controller
   {
 
     $newImage = $request->query('url');
-    return response()->json(['mediaThumbnail' => $newImage]);
     $newWidth = $request->query('w');
     $newHeight = $request->query('h');
     $exif = $request->query('exif');
