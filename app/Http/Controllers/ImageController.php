@@ -13,7 +13,7 @@ class ImageController extends Controller
   public function handleImage(Request $request)
   {
 
-    $newImage = urlencode($request->query('url'));
+    $newImage = rawurlencode($request->query('url'));
     $newWidth = $request->query('w');
     $newHeight = $request->query('h');
     $exif = $request->query('exif');
@@ -36,7 +36,7 @@ class ImageController extends Controller
     }
 
     if (filter_var($newImage, FILTER_VALIDATE_URL) === FALSE) {
-      return response()->json(['error' => 'URL invalid.'], 400);
+      return response()->json(['error' => $newImage], 400);
     }
 
     if(!empty($newWidth)) {
