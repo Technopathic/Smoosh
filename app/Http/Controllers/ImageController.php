@@ -13,7 +13,7 @@ class ImageController extends Controller
   public function handleImage(Request $request)
   {
 
-    $newImage = rawurlencode($request->query('url'));
+    $newImage = urlencode($request->query('url'));
     $newWidth = $request->query('w');
     $newHeight = $request->query('h');
     $exif = $request->query('exif');
