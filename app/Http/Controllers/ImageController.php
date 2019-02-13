@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Image;
-use finfo;
 use Google\Cloud\Storage\StorageClient;
 //use Cache;
 
@@ -28,12 +27,6 @@ class ImageController extends Controller
 
     if (app('redis')->exists($key)) {
       return response()->json(['mediaThumbnail' => app('redis')->get($key)]);
-    }
-
-    if(new finfo(FILEINFO_MIME, $newImage) == 'image/svg+xml') {
-      app('redis')->set($key, $newImage);
-      app('redis')->expire($key, 262800);
-      return response()-json(['mediaThumbnail' => $newImage]);
     }
 
     /*if (Cache::has($key)) {
