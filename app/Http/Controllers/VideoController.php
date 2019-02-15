@@ -37,13 +37,13 @@ class VideoController extends Controller
     }
 
     if(!empty($newWidth)) {
-      if($newWidth > 720) {
+      if($newWidth > 1920) {
         return response()->json(['error' => 'Dimensions invalid.'], 400);
       }
     }
 
     if(!empty($newHeight)) {
-      if($newHeight > 720) {
+      if($newHeight > 1920) {
         return response()->json(['error' => 'Dimensions invalid.'], 400);
       }
     }
