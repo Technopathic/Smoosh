@@ -93,7 +93,7 @@ class ImageController extends Controller
       }
     }
     
-    $image->save(base_path().'/storage/temp/'.$imageName.'.png');
+    $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
 
     $config = [
       'keyFilePath' => env('STORAGE_KEYFILE', '/var/www/cdn.devs.tv/storage/keyFile.json'),
@@ -101,13 +101,13 @@ class ImageController extends Controller
     ];
     $storage = new StorageClient($config);
     $bucket = $storage->bucket('devstv-cdn');
-    $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'.png', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'.png' ]);
-    $storageUrl = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'.png';
+    $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'.webp', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'.webp' ]);
+    $storageUrl = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'.webp';
 
     //Cache::put($key, $storageUrl, 262800);
     app('redis')->set($key, $storageUrl);
     app('redis')->expire($key, 262800);
-    unlink(base_path().'/storage/temp/'.$imageName.'.png');
+    unlink(base_path().'/storage/temp/'.$imageName.'.webp');
 
     return response()->json(['mediaThumbnail' => $storageUrl]);
   }
