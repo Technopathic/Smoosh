@@ -22,6 +22,7 @@ class VideoController extends Controller
     $newWidth = $request->query('w');
     $newHeight = $request->query('h');
     $aspect = $request->query('aspect');
+    $fallback = $request->query('fallback');
     $type = 'webp';
     if($fallback == true) { $type = 'png'; }
     $key = $video.'_'.$newWidth.'_'.$newHeight.'_'.$aspect.'_'.$type.'_thumbnail';
