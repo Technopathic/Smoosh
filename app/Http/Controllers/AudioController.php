@@ -55,7 +55,7 @@ class AudioController extends Controller
     $file->filters()->clip(TimeCode::fromSeconds($length - 7.5), TimeCode::fromSeconds(15));
     $file->save(new Mp3(), base_path().'/storage/temp/'.$imageName.'_preview.mp3');
     $waveform = $file->waveform(640, 240, array('#4b8dac'));
-    $waveform->save(base_path().'/storage/temp/'.$imageName.'_waveform.webp');
+    $waveform->save(base_path().'/storage/temp/'.$imageName.'_waveform.png');
 
     $config = [
       'keyFilePath' => env('STORAGE_KEYFILE', '/var/www/cdn.devs.tv/storage/keyFile.json'),
@@ -64,9 +64,9 @@ class AudioController extends Controller
     $storage = new StorageClient($config);
     $bucket = $storage->bucket('devstv-cdn');
     $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'_preview.mp3', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'_preview.mp3' ]);
-    $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'_waveform.webp', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'_waveform.webp' ]);
+    $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'_waveform.png', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'_waveform.png' ]);
     $mediaPreview = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'_preview.mp3';
-    $storageUrl = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'_waveform.webp';
+    $storageUrl = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'_waveform.png';
     
 
     app('redis')->set($keyPreview, $mediaPreview);
@@ -74,7 +74,7 @@ class AudioController extends Controller
     app('redis')->expire($keyPreview, 262800);
     app('redis')->expire($keyWave, 262800);
     unlink(base_path().'/storage/temp/'.$imageName.'_preview.mp3');
-    unlink(base_path().'/storage/temp/'.$imageName.'_waveform.webp');
+    unlink(base_path().'/storage/temp/'.$imageName.'_waveform.png');
 
     return response()->json(['mediaThumbnail' => $storageUrl, 'mediaPreview' => $mediaPreview]);
 
