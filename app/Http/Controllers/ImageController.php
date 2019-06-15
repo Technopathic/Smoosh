@@ -20,7 +20,7 @@ class ImageController extends Controller
     $aspect = $request->query('aspect');
     $fallback = $request->query('fallback');
     $type = 'webp';
-    if($fallback == true) { $type = 'png'; }
+    if($fallback === true) { $type = 'png'; }
     $key = $newImage.'_'.$newWidth.'_'.$exif.'_'.$aspect.'_'.$type;
 
     if(empty($newImage)) {
