@@ -22,6 +22,8 @@ class VideoController extends Controller
     $newWidth = $request->query('w');
     $newHeight = $request->query('h');
     $aspect = $request->query('aspect');
+    $type = 'webp';
+    if($fallback == true) { $type = 'png'; }
     $key = $video.'_'.$newWidth.'_'.$newHeight.'_'.$aspect.'_thumbnail';
 
     if(empty($video)) {
@@ -95,7 +97,7 @@ class VideoController extends Controller
       $image->resize($width, $height);
     }
 
-    $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
+    $image->save(base_path().'/storage/temp/'.$imageName.'.'.$type);
 
     $config = [
       'keyFilePath' => env('STORAGE_KEYFILE', '/var/www/cdn.devs.tv/storage/keyFile.json'),
@@ -103,13 +105,13 @@ class VideoController extends Controller
     ];
     $storage = new StorageClient($config);
     $bucket = $storage->bucket('devstv-cdn');
-    $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'.webp', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'.webp' ]);
-    $storageUrl = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'.webp';
+    $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'.'.$type, 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'.'.$type ]);
+    $storageUrl = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'.'.$type;
 
     //Cache::put($key, $storageUrl, 262800);
     app('redis')->set($key, $storageUrl);
     app('redis')->expire($key, 262800);
-    unlink(base_path().'/storage/temp/'.$imageName.'.webp');
+    unlink(base_path().'/storage/temp/'.$imageName.'.'.$type);
 
     return response()->json(['mediaThumbnail' => $storageUrl]);
   }
