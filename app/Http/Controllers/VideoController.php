@@ -24,7 +24,7 @@ class VideoController extends Controller
     $aspect = $request->query('aspect');
     $type = 'webp';
     if($fallback == true) { $type = 'png'; }
-    $key = $video.'_'.$newWidth.'_'.$newHeight.'_'.$aspect.'_thumbnail';
+    $key = $video.'_'.$newWidth.'_'.$newHeight.'_'.$aspect.'_'.$type.'_thumbnail';
 
     if(empty($video)) {
       return response()->json(['error' => 'URL missing.'], 400);
