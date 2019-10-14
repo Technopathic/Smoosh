@@ -18,7 +18,6 @@ class ImageController extends Controller
     foreach($media as $mKey => $m) {
       $mimetype = $m->getClientMimeType();
       $mediaSize = $m->getClientSize();
-      $mediaName = $m->getClientOriginalName();
       $mediaName = preg_replace('/\s+/', '_', $mediaName);
 
       if ($mimetype != "image/png" && 
@@ -32,14 +31,19 @@ class ImageController extends Controller
           return response()->json(['error' => 'One of your files was too large.'], 400);
       }
 
+      $image = Image::make($media);
+      $imageName = str_random(32);
+      $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
+
       $config = [
         'keyFilePath' => env('STORAGE_KEYFILE', ''),
         'projectId' => env('STORAGE_PROJECT', ''),
       ];
       $storage = new StorageClient($config);
       $bucket = $storage->bucket(env('STORAGE_BUCKET'));
-      $bucket->upload($m, [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$mediaName ]);
-      $storageUrl = 'https://storage.googleapis.com/'.env('STORAGE_BUCKET').'/cache/'.$mediaName;
+      $bucket->upload($m, [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'.webp' ]);
+      $storageUrl = 'https://storage.googleapis.com/'.env('STORAGE_BUCKET').'/cache/'.$imageName.'.webp';
+      unlink(base_path().'/storage/temp/'.$imageName.'.'.$type);
 
       $uploadedImages[] = $storageUrl;
 
