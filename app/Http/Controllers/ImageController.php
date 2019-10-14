@@ -12,17 +12,6 @@ class ImageController extends Controller
 
   public function uploadImage(Request $request)
   {
-      $rules = [
-        'media' => 'required'
-    ];
-
-    $validator = Validator::make($request->all(), $rules);
-    if($validator->fails()) {
-        return response()->json(['error' => 'Please include your media.'], 400);
-    }
-
-    $disk = Storage::disk('gcs');
-
     $media = $request->input('media');
     $uploadedImages = [];
 
@@ -50,11 +39,9 @@ class ImageController extends Controller
       $storage = new StorageClient($config);
       $bucket = $storage->bucket(env('STORAGE_BUCKET'));
       $bucket->upload($m, [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$mediaName ]);
-      $storageUrl = 'https://storage.googleapis.com/'.env('STORAGE_BUCKET').'/cache/'.$imageName;
+      $storageUrl = 'https://storage.googleapis.com/'.env('STORAGE_BUCKET').'/cache/'.$mediaName;
 
-      $uploadedFile = $disk->put($mediaFile, $m);
-      $mediaUrl = $disk->url($uploadedFile);
-      $uploadedImages[] = $mediaUrl;
+      $uploadedImages[] = $storageUrl;
 
     }
 
