@@ -40,7 +40,7 @@ class ImageController extends Controller
       ];
       $storage = new StorageClient($config);
       $bucket = $storage->bucket(env('STORAGE_BUCKET'));
-      $bucket->upload($m, [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'.webp' ]);
+      $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'.webp', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'.webp' ]);
       $storageUrl = 'https://storage.googleapis.com/'.env('STORAGE_BUCKET').'/cache/'.$imageName.'.webp';
       unlink(base_path().'/storage/temp/'.$imageName.'.webp');
 
