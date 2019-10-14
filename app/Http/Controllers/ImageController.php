@@ -18,7 +18,6 @@ class ImageController extends Controller
     foreach($media as $mKey => $m) {
       $mimetype = $m->getClientMimeType();
       $mediaSize = $m->getClientSize();
-      $mediaName = preg_replace('/\s+/', '_', $mediaName);
 
       if ($mimetype != "image/png" && 
           $mimetype != "image/jpeg" && 
