@@ -30,7 +30,7 @@ class ImageController extends Controller
           return response()->json(['error' => 'One of your files was too large.'], 400);
       }
 
-      $image = Image::make($media);
+      $image = Image::make($m);
       $imageName = str_random(32);
       $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
 
