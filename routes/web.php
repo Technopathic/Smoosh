@@ -15,7 +15,7 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$route->get('/uploadImage', 'ImageController@uploadImage');
+$route->post('/uploadImage', 'ImageController@uploadImage');
 $router->get('/image', 'ImageController@handleImage');
 //$router->get('/videoThumbnail', 'VideoController@videoThumbnail');
 //$router->get('/videoPreview', 'VideoController@videoPreview');
