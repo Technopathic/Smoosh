@@ -12,26 +12,24 @@ class ImageController extends Controller
 
   public function uploadImage(Request $request)
   {
-    $media = $request->file('media');
+    $media = $request->input('media');
     $uploadedImages = [];
 
     foreach($media as $mKey => $m) {
-      $mimetype = $m->getClientMimeType();
-      $mediaSize = $m->getClientSize();
-
-      if ($mimetype != "image/png" && 
-          $mimetype != "image/jpeg" && 
-          $mimetype != "image/webp"
-      ) {
-          return response()->json(['error' => 'Not a valid media type', 'type' => $mimetype], 400);
-      }
-
-      if($mediaSize > 20000000) {
-          return response()->json(['error' => 'One of your files was too large.'], 400);
-      }
 
       $image = Image::make($m);
       $imageName = str_random(32);
+
+      if($image->filesize() > 8388608)
+      {
+        return response()->json(['error' => 'This image is too large.'], 400);
+      }
+
+      if($image->mime() != "image/png" && $image->mime() != "image/jpeg" && $image->mime() != "image/gif" && $image->mime() != "image/webp")
+      {
+        return response()->json(['error' => 'Not a valid PNG/JPG/GIF/WEBP image.']);
+      }
+
       $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
 
       $config = [
