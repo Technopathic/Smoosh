@@ -10,6 +10,57 @@ use Google\Cloud\Storage\StorageClient;
 class ImageController extends Controller
 {
 
+  public function uploadImage(Request $request)
+  {
+      $rules = [
+        'media' => 'required'
+    ];
+
+    $validator = Validator::make($request->all(), $rules);
+    if($validator->fails()) {
+        return response()->json(['error' => 'Please include your media.'], 400);
+    }
+
+    $disk = Storage::disk('gcs');
+
+    $media = $request->input('media');
+    $uploadedImages = [];
+
+    foreach($media as $mKey => $m) {
+      $mimetype = $m->getClientMimeType();
+      $mediaSize = $m->getClientSize();
+      $mediaName = $m->getClientOriginalName();
+      $mediaName = preg_replace('/\s+/', '_', $mediaName);
+
+      if ($mimetype != "image/png" && 
+          $mimetype != "image/jpeg" && 
+          $mimetype != "image/webp"
+      ) {
+          return response()->json(['error' => 'Not a valid media type', 'type' => $mimetype], 400);
+      }
+
+      if($mediaSize > 20000000) {
+          return response()->json(['error' => 'One of your files was too large.'], 400);
+      }
+
+      $config = [
+        'keyFilePath' => env('STORAGE_KEYFILE', ''),
+        'projectId' => env('STORAGE_PROJECT', ''),
+      ];
+      $storage = new StorageClient($config);
+      $bucket = $storage->bucket(env('STORAGE_BUCKET'));
+      $bucket->upload($m, [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$mediaName ]);
+      $storageUrl = 'https://storage.googleapis.com/'.env('STORAGE_BUCKET').'/cache/'.$imageName;
+
+      $uploadedFile = $disk->put($mediaFile, $m);
+      $mediaUrl = $disk->url($uploadedFile);
+      $uploadedImages[] = $mediaUrl;
+
+    }
+
+    return response()->json(['uploadedImages' => $uploadedImages], 200);
+  }
+
   public function handleImage(Request $request)
   {
 
