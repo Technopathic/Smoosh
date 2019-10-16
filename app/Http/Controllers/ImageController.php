@@ -12,7 +12,7 @@ class ImageController extends Controller
 
   public function uploadImage(Request $request)
   {
-    $media = $request->input('media');
+    $media = $request->json('media');
     $uploadedImages = [];
 
     foreach($media as $mKey => $m) {
