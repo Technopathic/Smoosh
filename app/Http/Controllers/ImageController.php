@@ -31,9 +31,9 @@ class ImageController extends Controller
       }
 
       $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
-      $image = Image::make(base_path().'/storage/temp/'.$imageName.'.webp');
-      $image->orientate();
-      $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
+      $newImage = Image::make(base_path().'/storage/temp/'.$imageName.'.webp');
+      $newImage->orientate();
+      $newImage->save(base_path().'/storage/temp/'.$imageName.'.webp');
 
       $config = [
         'keyFilePath' => env('STORAGE_KEYFILE', ''),
