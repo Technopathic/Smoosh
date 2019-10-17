@@ -31,7 +31,8 @@ class ImageController extends Controller
       }
 
       if($m['rotation'] != 0) {
-        $image->rotate($m['rotation']);
+        $newRotation = 180 - $m['rotation'];
+        $image->rotate($newRotation);
       }
 
       $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
