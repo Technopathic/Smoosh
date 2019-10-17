@@ -31,7 +31,7 @@ class ImageController extends Controller
       }
 
       if($m['rotation'] != 0) {
-        $image->rotate(-90);
+        $image->rotate(90);
       }
 
       $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
