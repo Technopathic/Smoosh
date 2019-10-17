@@ -30,6 +30,8 @@ class ImageController extends Controller
         return response()->json(['error' => 'Not a valid PNG/JPG/GIF/WEBP image.']);
       }
 
+      $image->orientate();
+
       $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
 
       $config = [
