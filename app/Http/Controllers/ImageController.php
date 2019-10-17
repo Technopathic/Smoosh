@@ -17,7 +17,7 @@ class ImageController extends Controller
 
     foreach($media as $mKey => $m) {
 
-      $image = Image::make($m->data);
+      $image = Image::make($m['data']);
       $imageName = str_random(32);
 
       if($image->filesize() > 8388608)
@@ -30,8 +30,8 @@ class ImageController extends Controller
         return response()->json(['error' => 'Not a valid PNG/JPG/GIF/WEBP image.']);
       }
 
-      if($m->rotation != 0) {
-        $image->rotate($m->rotation);
+      if($m['rotation'] != 0) {
+        $image->rotate($m['rotation']);
       }
 
       $image->save(base_path().'/storage/temp/'.$imageName.'.webp');
