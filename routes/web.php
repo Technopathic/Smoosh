@@ -17,6 +17,6 @@ $router->get('/', function () use ($router) {
 
 $router->post('/uploadImage', 'ImageController@uploadImage');
 $router->get('/image', 'ImageController@handleImage');
-//$router->get('/videoThumbnail', 'VideoController@videoThumbnail');
-//$router->get('/videoPreview', 'VideoController@videoPreview');
-//$router->get('/audioPreview', 'AudioController@audioPreview');
+$router->get('/videoThumbnail', 'VideoController@videoThumbnail');
+$router->get('/videoPreview', 'VideoController@videoPreview');
+$router->get('/audioPreview', 'AudioController@audioPreview');

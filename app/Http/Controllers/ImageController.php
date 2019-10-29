@@ -143,13 +143,13 @@ class ImageController extends Controller
     $image->save(base_path().'/storage/temp/'.$imageName.'.'.$type);
 
     $config = [
-      'keyFilePath' => env('STORAGE_KEYFILE', '/var/www/cdn.devs.tv/storage/keyFile.json'),
-      'projectId' => env('STORAGE_PROJECT', 'devstv-223819'),
+      'keyFilePath' => env('STORAGE_KEYFILE', ''),
+      'projectId' => env('STORAGE_PROJECT', ''),
     ];
     $storage = new StorageClient($config);
-    $bucket = $storage->bucket('devstv-cdn');
+    $bucket = $storage->bucket(env('STORAGE_BUCKET'));
     $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'.'.$type, 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'.'.$type ]);
-    $storageUrl = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'.'.$type;
+    $storageUrl = 'https://storage.googleapis.com/'.env('STORAGE_BUCKET').'/cache/'.$imageName.'.'.$type;
 
     //Cache::put($key, $storageUrl, 262800);
     app('redis')->set($key, $storageUrl);

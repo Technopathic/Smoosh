@@ -58,15 +58,15 @@ class AudioController extends Controller
     $waveform->save(base_path().'/storage/temp/'.$imageName.'_waveform.png');
 
     $config = [
-      'keyFilePath' => env('STORAGE_KEYFILE', '/var/www/cdn.devs.tv/storage/keyFile.json'),
-      'projectId' => env('STORAGE_PROJECT', 'devstv-223819'),
+      'keyFilePath' => env('STORAGE_KEYFILE', ''),
+      'projectId' => env('STORAGE_PROJECT', ''),
     ];
     $storage = new StorageClient($config);
-    $bucket = $storage->bucket('devstv-cdn');
+    $bucket = $storage->bucket(env('STORAGE_BUCKET'));
     $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'_preview.mp3', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'_preview.mp3' ]);
     $bucket->upload(fopen(base_path().'/storage/temp/'.$imageName.'_waveform.png', 'r'), [ 'predefinedAcl' => 'publicRead', 'name' => 'cache/'.$imageName.'_waveform.png' ]);
-    $mediaPreview = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'_preview.mp3';
-    $storageUrl = 'https://storage.googleapis.com/devstv-cdn/cache/'.$imageName.'_waveform.png';
+    $mediaPreview = 'https://storage.googleapis.com/'.env('STORAGE_BUCKET').'/cache/'.$imageName.'_preview.mp3';
+    $storageUrl = 'https://storage.googleapis.com/'.env('STORAGE_BUCKET').'/cache/'.$imageName.'_waveform.png';
     
 
     app('redis')->set($keyPreview, $mediaPreview);
